@@ -1,0 +1,40 @@
+.toolbar {
+  align-items: center;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tab {
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.tab:hover {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+.tab.active {
+  background: var(--primary-soft);
+  border-color: #bfdbfe;
+  color: var(--primary);
+}
+.search {
+  width: 280px;
+  max-width: 100%;
+}
+.retry {
+  margin-left: auto;
+}
+@media (max-width: 720px) {
+  .search {
+    width: 100%;
+  }
+}

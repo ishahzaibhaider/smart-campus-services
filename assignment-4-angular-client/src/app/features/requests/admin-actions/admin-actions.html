@@ -1,0 +1,79 @@
+<div class="card">
+  <div class="card-header">
+    <h2>Admin actions</h2>
+    <span class="chip">Service administrator</span>
+  </div>
+
+  <div class="card-body sections">
+    <!-- Workflow -->
+    <section class="section">
+      <h3>Workflow</h3>
+      @if (next(); as nextStep) {
+        <div class="transition">
+          <span [appStatusColor]="request().status">{{ request().status }}</span>
+          <span class="arrow" aria-hidden="true">→</span>
+          <span [appStatusColor]="nextStep">{{ nextStep }}</span>
+        </div>
+
+        @if (nextStep === 'Assigned') {
+          <p class="hint">Assign an administrator below — the request moves to <strong>Assigned</strong> automatically.</p>
+        } @else {
+          <label class="label" for="note">Note for the requester <span class="muted">(optional)</span></label>
+          <textarea
+            id="note"
+            name="note"
+            class="form-control"
+            rows="3"
+            maxlength="500"
+            placeholder="e.g. Technician visited, replaced the HDMI cable."
+            [(ngModel)]="note"
+          ></textarea>
+          <button type="button" class="btn btn-primary btn-block" [disabled]="busy()" (click)="submitAdvance()">
+            Move to {{ nextStep }}
+          </button>
+        }
+      } @else {
+        <p class="hint">This request is <strong>Closed</strong>. No further status changes are possible.</p>
+      }
+    </section>
+
+    <!-- Assignment -->
+    <section class="section">
+      <h3>{{ request().assignedTo ? 'Reassign' : 'Assign' }}</h3>
+      @if (isFinished()) {
+        <p class="hint">A {{ request().status.toLowerCase() }} request cannot be reassigned.</p>
+      } @else {
+        <select class="form-control" name="assignee" aria-label="Administrator" [(ngModel)]="selectedAdmin" [disabled]="busy()">
+          <option value="" disabled>Select an administrator…</option>
+          @for (admin of admins(); track admin._id) {
+            <option [value]="admin._id">{{ admin.name }} — {{ admin.email }}</option>
+          }
+        </select>
+        <button type="button" class="btn btn-ghost btn-block" [disabled]="busy() || !assignChanged()" (click)="submitAssign()">
+          {{ request().assignedTo ? 'Reassign' : 'Assign' }}
+        </button>
+      }
+    </section>
+
+    <!-- Priority -->
+    <section class="section">
+      <h3>Priority</h3>
+      <div class="inline">
+        <select class="form-control" name="priority" aria-label="Priority" [(ngModel)]="selectedPriority" [disabled]="busy()">
+          @for (p of priorities; track p) {
+            <option [value]="p">{{ p }}</option>
+          }
+        </select>
+        <button type="button" class="btn btn-ghost" [disabled]="busy() || selectedPriority() === request().priority" (click)="submitPriority()">
+          Update
+        </button>
+      </div>
+    </section>
+
+    <!-- Danger zone -->
+    <section class="section danger">
+      <h3>Danger zone</h3>
+      <button type="button" class="btn btn-danger btn-block" [disabled]="busy()" (click)="remove.emit()">Delete request</button>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+}
+.summary {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.gap {
+  padding: 0 4px;
+  color: var(--text-muted);
+}

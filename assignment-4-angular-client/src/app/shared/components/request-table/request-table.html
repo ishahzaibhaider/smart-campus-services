@@ -1,0 +1,55 @@
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Request</th>
+        <th>Title</th>
+        <th class="hide-sm">Category</th>
+        @if (adminView()) {
+          <th class="hide-sm">Requester</th>
+          <th class="hide-sm">Assigned to</th>
+        }
+        <th>Priority</th>
+        <th>Status</th>
+        <th class="hide-sm">Submitted</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (request of requests(); track request._id) {
+        <tr class="clickable" (click)="open(request)">
+          <td>
+            <a class="mono req-id" [routerLink]="['/requests', request.requestId]" (click)="$event.stopPropagation()">
+              {{ request.requestId }}
+            </a>
+          </td>
+          <td class="title-cell" [class.compact]="adminView()">
+            <div class="cell-title">{{ request.title }}</div>
+            <div class="cell-sub truncate">{{ request.description }}</div>
+          </td>
+          <td class="hide-sm nowrap">
+            <span class="chip" [title]="request.category.name">{{ request.category.code }}</span>
+            @if (!adminView()) {
+              <span class="cat-name">{{ request.category.name }}</span>
+            }
+          </td>
+          @if (adminView()) {
+            <td class="hide-sm person">{{ request.requesterName || request.createdBy.name }}</td>
+            <td class="hide-sm person">
+              @if (request.assignedTo) {
+                {{ request.assignedTo.name }}
+              } @else {
+                <span class="muted">Unassigned</span>
+              }
+            </td>
+          }
+          <td><span [appStatusColor]="request.priority" kind="priority">{{ request.priority }}</span></td>
+          <td><span [appStatusColor]="request.status">{{ request.status }}</span></td>
+          <td class="hide-sm nowrap">
+            <div>{{ request.createdAt | date: 'MMM d, y' }}</div>
+            <div class="cell-sub">updated {{ request.updatedAt | timeAgo }}</div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

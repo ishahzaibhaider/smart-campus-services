@@ -1,0 +1,100 @@
+<section class="container">
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">Service administration</span>
+      <h1>Dashboard</h1>
+      <p>Live overview of every campus service request.</p>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="btn btn-ghost" [disabled]="loading()" (click)="load()">Refresh</button>
+      <a routerLink="/admin/requests" class="btn btn-primary">View all requests</a>
+    </div>
+  </div>
+
+  @if (error(); as message) {
+    <div class="alert alert-error" role="alert">
+      <span>{{ message }}</span>
+      <button type="button" class="btn btn-ghost btn-sm retry" (click)="load()">Retry</button>
+    </div>
+  } @else if (loading() && !data()) {
+    <div class="card loading-row"><span class="spinner"></span> Loading statistics…</div>
+  } @else if (data(); as d) {
+    <div class="stats-grid">
+      <a class="card stat stat-total" routerLink="/admin/requests">
+        <span class="stat-label">Total requests</span>
+        <span class="stat-value">{{ d.stats.total | number }}</span>
+        <span class="stat-foot">{{ openCount() }} open · {{ d.assignedToMe }} assigned to you</span>
+      </a>
+      @for (status of statuses; track status) {
+        <a class="card stat" [class]="'stat-' + slug(status)" [routerLink]="['/admin/requests']" [queryParams]="{ status }">
+          <span class="stat-label"><span [appStatusColor]="status">{{ status }}</span></span>
+          <span class="stat-value">{{ statusCount(d.stats, status) | number }}</span>
+          <span class="bar"><span class="bar-fill" [style.width.%]="share(statusCount(d.stats, status), d.stats.total) * 100"></span></span>
+          <span class="stat-foot">{{ share(statusCount(d.stats, status), d.stats.total) | percent: '1.0-0' }} of all</span>
+        </a>
+      }
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>Unresolved by category</h2>
+          <span class="muted small">Submitted, Assigned or In Progress</span>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th>Category</th><th class="num">Open</th><th class="hide-sm">Share</th><th></th></tr>
+            </thead>
+            <tbody>
+              @for (row of d.stats.unresolvedByCategory; track row.category) {
+                <tr>
+                  <td>
+                    @if (row.code) { <span class="chip">{{ row.code }}</span> }
+                    {{ row.category }}
+                  </td>
+                  <td class="num"><strong>{{ row.count }}</strong></td>
+                  <td class="hide-sm bar-cell">
+                    <span class="bar"><span class="bar-fill" [style.width.%]="(row.count / maxUnresolved()) * 100"></span></span>
+                  </td>
+                  <td class="num">
+                    @if (row.categoryId && row.count > 0) {
+                      <a [routerLink]="['/admin/requests']" [queryParams]="{ category: row.categoryId }">View</a>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="4" class="muted">No unresolved requests. Nice work!</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>By priority</h2></div>
+        <div class="card-body priority-list">
+          @for (p of priorities; track p) {
+            <a class="priority-row" [routerLink]="['/admin/requests']" [queryParams]="{ priority: p }">
+              <span [appStatusColor]="p" kind="priority">{{ p }}</span>
+              <span class="bar"><span class="bar-fill" [class]="'fill-' + slug(p)" [style.width.%]="share(d.stats.byPriority[p], d.stats.total) * 100"></span></span>
+              <strong>{{ d.stats.byPriority[p] }}</strong>
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Latest requests</h2>
+        <a routerLink="/admin/requests">See all ›</a>
+      </div>
+      @if (d.recent.length) {
+        <app-request-table [requests]="d.recent" [adminView]="true" />
+      } @else {
+        <div class="empty-state">No requests yet.</div>
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,17 @@
+<div class="tracker-wrap">
+  <div class="track" aria-hidden="true"><div class="track-fill" [style.width.%]="progress()"></div></div>
+  <ol class="tracker" aria-label="Request progress">
+    @for (step of steps(); track step.label; let i = $index) {
+      <li class="step" [class]="step.state" [attr.aria-current]="step.state === 'current' ? 'step' : null">
+        <span class="dot">
+          @if (step.state === 'done') {
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          } @else {
+            {{ i + 1 }}
+          }
+        </span>
+        <span class="label">{{ step.label }}</span>
+      </li>
+    }
+  </ol>
+</div>

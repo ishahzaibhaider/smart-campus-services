@@ -1,0 +1,40 @@
+.req-id {
+  font-weight: 600;
+}
+.title-cell {
+  min-width: 220px;
+  max-width: 360px;
+}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 340px;
+}
+.cat-name {
+  margin-left: 8px;
+  font-size: 13px;
+}
+.nowrap {
+  white-space: nowrap;
+}
+.person {
+  min-width: 130px;
+}
+.compact {
+  min-width: 200px;
+  max-width: 260px;
+}
+.compact .truncate {
+  max-width: 240px;
+}
+@media (max-width: 720px) {
+  .title-cell,
+  .compact {
+    min-width: 170px;
+  }
+  .truncate,
+  .compact .truncate {
+    max-width: 180px;
+  }
+}

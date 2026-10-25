@@ -1,0 +1,50 @@
+<header class="header">
+  <div class="inner">
+    <a class="brand" [routerLink]="auth.homeUrl()" (click)="menuOpen.set(false)">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3 2 8l10 5 8-4v6h2V8L12 3Zm-6 9.2V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-3.8l-6 3-6-3Z" fill="currentColor"/></svg>
+      </span>
+      <span class="brand-text">
+        <strong>Smart Campus</strong>
+        <small>Service Management</small>
+      </span>
+    </a>
+
+    @if (auth.currentUser(); as user) {
+      <button
+        type="button"
+        class="menu-toggle"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="main-nav"
+        aria-label="Toggle navigation"
+        (click)="toggleMenu()"
+      >
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav id="main-nav" class="nav" [class.open]="menuOpen()">
+        @if (auth.isAdmin()) {
+          <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="menuOpen.set(false)">Dashboard</a>
+          <a routerLink="/admin/requests" routerLinkActive="active" (click)="menuOpen.set(false)">All Requests</a>
+        } @else {
+          <a routerLink="/dashboard" routerLinkActive="active" (click)="menuOpen.set(false)">My Requests</a>
+          <a routerLink="/requests/new" routerLinkActive="active" (click)="menuOpen.set(false)">New Request</a>
+        }
+
+        <div class="user">
+          <span class="avatar" aria-hidden="true">{{ user.name | initials }}</span>
+          <span class="user-text">
+            <span class="user-name">{{ user.name }}</span>
+            <span class="role" [class.role-admin]="user.role === 'admin'">{{ user.role === 'admin' ? 'Service Admin' : (user.role | titlecase) }}</span>
+          </span>
+          <button type="button" class="btn btn-ghost btn-sm" (click)="logout()">Log out</button>
+        </div>
+      </nav>
+    } @else {
+      <nav class="nav nav-guest">
+        <a routerLink="/login" routerLinkActive="active">Sign in</a>
+        <a routerLink="/register" class="btn btn-primary btn-sm">Create account</a>
+      </nav>
+    }
+  </div>
+</header>

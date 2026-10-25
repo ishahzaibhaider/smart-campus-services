@@ -1,0 +1,44 @@
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.section:last-child {
+  border-bottom: 0;
+}
+.section h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.transition {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.arrow {
+  color: var(--text-muted);
+}
+.hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.inline {
+  display: flex;
+  gap: 8px;
+}
+textarea.form-control {
+  min-height: 80px;
+}

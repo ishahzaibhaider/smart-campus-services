@@ -1,0 +1,110 @@
+<section class="container">
+  <a [routerLink]="backLink()" class="back-link">‹ Back to {{ auth.isAdmin() ? 'all requests' : 'my requests' }}</a>
+
+  @if (loading()) {
+    <div class="card loading-row"><span class="spinner"></span> Loading request…</div>
+  } @else if (loadError(); as error) {
+    <div class="card empty-state">
+      <span class="eyebrow">{{ error.status === 404 ? 'Not found' : error.status === 403 ? 'Access denied' : 'Error' }}</span>
+      <h3>We couldn't open this request</h3>
+      <p>{{ error.message }}</p>
+      <a class="btn btn-primary" [routerLink]="backLink()">Back</a>
+    </div>
+  } @else if (request(); as r) {
+    <div class="page-header">
+      <div>
+        <span class="eyebrow mono">{{ r.requestId }}</span>
+        <h1>{{ r.title }}</h1>
+        <p>
+          {{ r.category.name }} · submitted by {{ r.requesterName || r.createdBy.name }} on
+          {{ r.createdAt | date: 'MMMM d, y' }}
+        </p>
+      </div>
+      <div class="header-badges">
+        <span [appStatusColor]="r.priority" kind="priority">{{ r.priority }} priority</span>
+        <span [appStatusColor]="r.status">{{ r.status }}</span>
+      </div>
+    </div>
+
+    @if (actionError(); as message) {
+      <div class="alert alert-error action-error" role="alert">
+        <span>{{ message }}</span>
+        <button type="button" class="dismiss" aria-label="Dismiss" (click)="actionError.set(null)">×</button>
+      </div>
+    }
+
+    <div class="layout">
+      <div class="main-col">
+        <div class="card">
+          <div class="card-header"><h2>Progress</h2><span class="muted small">Updated {{ r.updatedAt | timeAgo }}</span></div>
+          <div class="card-body"><app-status-tracker [status]="r.status" /></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>Description</h2></div>
+          <div class="card-body"><p class="description">{{ r.description }}</p></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>History</h2><span class="muted small">{{ r.history.length }} update{{ r.history.length === 1 ? '' : 's' }}</span></div>
+          <div class="card-body"><app-history-timeline [history]="r.history" /></div>
+        </div>
+      </div>
+
+      <aside class="side-col">
+        <div class="card">
+          <div class="card-header"><h2>Details</h2></div>
+          <dl class="details card-body">
+            <dt>Request ID</dt>
+            <dd class="mono">{{ r.requestId }}</dd>
+            <dt>Category</dt>
+            <dd><span class="chip">{{ r.category.code }}</span> {{ r.category.name }}</dd>
+            <dt>Priority</dt>
+            <dd><span [appStatusColor]="r.priority" kind="priority">{{ r.priority }}</span></dd>
+            <dt>Requester</dt>
+            <dd>
+              {{ r.requesterName || r.createdBy.name }}
+              @if (r.createdBy.email) { <div class="cell-sub">{{ r.createdBy.email }}</div> }
+            </dd>
+            <dt>Assigned to</dt>
+            <dd>
+              @if (r.assignedTo; as assignee) {
+                {{ assignee.name }}
+                <div class="cell-sub">{{ assignee.email }}</div>
+              } @else {
+                <span class="muted">Not assigned yet</span>
+              }
+            </dd>
+            <dt>Created</dt>
+            <dd>{{ r.createdAt | date: 'medium' }}</dd>
+            <dt>Last update</dt>
+            <dd>{{ r.updatedAt | date: 'medium' }}</dd>
+          </dl>
+        </div>
+
+        @if (auth.isAdmin()) {
+          <app-admin-actions
+            [request]="r"
+            [admins]="admins()"
+            [busy]="busy()"
+            (assign)="onAssign($event)"
+            (advance)="onAdvance($event)"
+            (priorityChange)="onPriorityChange($event)"
+            (remove)="onDelete()"
+          />
+        } @else if (canStudentDelete()) {
+          <div class="card">
+            <div class="card-body student-actions">
+              <p class="muted small">You can withdraw this request while it is still <strong>Submitted</strong>.</p>
+              <button type="button" class="btn btn-danger btn-block" [disabled]="busy()" (click)="onDelete()">Withdraw request</button>
+            </div>
+          </div>
+        } @else if (isOwner()) {
+          <div class="alert alert-info">
+            The service team is working on this request, so it can no longer be withdrawn.
+          </div>
+        }
+      </aside>
+    </div>
+  }
+</section>

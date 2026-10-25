@@ -1,0 +1,81 @@
+.tracker-wrap {
+  position: relative;
+}
+.tracker {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.track {
+  position: absolute;
+  top: 15px;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  background: var(--border);
+  border-radius: 3px;
+}
+.track-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.dot {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+  z-index: 1;
+}
+.label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.done .dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.current .dot {
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 0 0 5px var(--primary-soft);
+}
+.current .label {
+  color: var(--text);
+  font-weight: 600;
+}
+.done .label {
+  color: var(--text);
+}
+@media (max-width: 560px) {
+  .label {
+    font-size: 11px;
+  }
+  .dot {
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+  .track {
+    top: 12px;
+  }
+}

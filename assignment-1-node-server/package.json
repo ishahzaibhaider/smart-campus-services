@@ -1,0 +1,13 @@
+{
+  "name": "smart-campus-a1-node-server",
+  "version": "1.0.0",
+  "description": "Assignment 1 - Basic service request server using only Node.js core modules (http, url, fs, events, streams)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/smoke-test.js"
+  },
+  "author": "Syed Shahzaib Haider Rizvi (FA23-BAI-050)",
+  "license": "ISC",
+  "type": "commonjs"
+}

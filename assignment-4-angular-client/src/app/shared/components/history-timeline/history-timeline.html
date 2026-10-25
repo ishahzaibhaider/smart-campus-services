@@ -1,0 +1,21 @@
+@if (entries().length) {
+  <ul class="timeline">
+    @for (entry of entries(); track entry.at + entry.status; let first = $first) {
+      <li class="item" [class.latest]="first">
+        <span class="marker" aria-hidden="true"></span>
+        <div class="content">
+          <div class="row">
+            <span [appStatusColor]="entry.status">{{ entry.status }}</span>
+            <time [attr.datetime]="entry.at" [title]="entry.at | date: 'medium'">{{ entry.at | timeAgo }}</time>
+          </div>
+          @if (entry.note) {
+            <p class="note">{{ entry.note }}</p>
+          }
+          <p class="meta">by {{ actorName(entry.by) }} · {{ entry.at | date: 'MMM d, y, h:mm a' }}</p>
+        </div>
+      </li>
+    }
+  </ul>
+} @else {
+  <p class="muted">No history recorded yet.</p>
+}

@@ -1,0 +1,97 @@
+<section class="auth-page">
+  <div class="auth-intro">
+    <span class="eyebrow">COMSATS · Smart Campus</span>
+    <h1>Campus services, tracked from request to resolution.</h1>
+    <p>
+      Report an IT issue, a broken projector or a lost ID card, then follow it through
+      <strong>Submitted → Assigned → In Progress → Resolved → Closed</strong>.
+    </p>
+    <ul class="service-list">
+      <li>IT Support</li>
+      <li>Maintenance</li>
+      <li>Transport</li>
+      <li>Library</li>
+      <li>Lost &amp; Found</li>
+      <li>Classroom &amp; Equipment</li>
+      <li>Facility Services</li>
+    </ul>
+  </div>
+
+  <div class="card auth-card">
+    <div class="card-body">
+      <h2>Sign in</h2>
+      <p class="muted sub">Use your campus email and password.</p>
+
+      @if (reason() === 'expired') {
+        <div class="alert alert-info">Your session expired. Please sign in again.</div>
+      }
+      @if (errorMessage(); as message) {
+        <div class="alert alert-error" role="alert">{{ message }}</div>
+      }
+
+      <form class="form-grid" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            class="form-control"
+            formControlName="email"
+            autocomplete="username"
+            placeholder="you@student.campus.edu"
+            [class.invalid]="email.invalid && email.touched"
+          />
+          @if (email.touched && email.hasError('required')) {
+            <span class="field-error">Email is required.</span>
+          } @else if (email.touched && email.hasError('email')) {
+            <span class="field-error">Enter a valid email address.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input
+              id="password"
+              class="form-control"
+              formControlName="password"
+              autocomplete="current-password"
+              [type]="showPassword() ? 'text' : 'password'"
+              [class.invalid]="password.invalid && password.touched"
+            />
+            <button type="button" class="reveal" (click)="showPassword.set(!showPassword())">
+              {{ showPassword() ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+          @if (password.touched && password.hasError('required')) {
+            <span class="field-error">Password is required.</span>
+          } @else if (password.touched && password.hasError('maxlength')) {
+            <span class="field-error">Password must be at most {{ password.getError('maxlength').requiredLength }} characters.</span>
+          }
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="submitting()">
+          @if (submitting()) {
+            <span class="spinner"></span> Signing in…
+          } @else {
+            Sign in
+          }
+        </button>
+      </form>
+
+      <p class="switch">New student? <a routerLink="/register">Create an account</a></p>
+
+      <div class="demo">
+        <span class="label">Demo accounts (seeded)</span>
+        <div class="demo-grid">
+          @for (account of demoAccounts; track account.email) {
+            <button type="button" class="demo-btn" (click)="fillDemo(account)">
+              <span>{{ account.label }}</span>
+              <small>{{ account.email }}</small>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

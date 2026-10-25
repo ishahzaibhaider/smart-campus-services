@@ -1,0 +1,29 @@
+[
+  {
+    "id": "REQ-101",
+    "name": "Ayesha Khan",
+    "category": "IT Support",
+    "description": "Wi-Fi keeps disconnecting in Lab 3 of the CS block.",
+    "priority": "High",
+    "date": "2026-10-20T09:15:00.000Z",
+    "status": "Submitted"
+  },
+  {
+    "id": "REQ-102",
+    "name": "Syed Shahzaib Haider Rizvi",
+    "category": "Maintenance",
+    "description": "Air conditioner in room C-204 is leaking water.",
+    "priority": "Medium",
+    "date": "2026-10-21T11:40:00.000Z",
+    "status": "In Progress"
+  },
+  {
+    "id": "REQ-103",
+    "name": "Omar Farooq",
+    "category": "Library",
+    "description": "Return of 'Clean Code' not recorded in the library system.",
+    "priority": "Low",
+    "date": "2026-10-22T14:05:00.000Z",
+    "status": "Closed"
+  }
+]

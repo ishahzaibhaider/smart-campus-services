@@ -1,0 +1,66 @@
+<section class="container">
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">Student dashboard</span>
+      <h1>My Requests</h1>
+      <p>Hi {{ firstName() }}, here is everything you have reported to campus services.</p>
+    </div>
+    <a routerLink="/requests/new" class="btn btn-primary">
+      <span aria-hidden="true">+</span> New Request
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header toolbar">
+      <div class="tabs" role="tablist" aria-label="Filter by status">
+        <button type="button" role="tab" class="tab" [class.active]="status() === ''" [attr.aria-selected]="status() === ''" (click)="setStatus('')">All</button>
+        @for (s of statuses; track s) {
+          <button type="button" role="tab" class="tab" [class.active]="status() === s" [attr.aria-selected]="status() === s" (click)="setStatus(s)">{{ s }}</button>
+        }
+      </div>
+      <input
+        type="search"
+        class="form-control search"
+        placeholder="Search title, ID or description…"
+        aria-label="Search my requests"
+        [ngModel]="search()"
+        (ngModelChange)="onSearch($event)"
+      />
+    </div>
+
+    @let s = state();
+    @if (s.kind === 'loading') {
+      <div class="loading-row"><span class="spinner"></span> Loading your requests…</div>
+    } @else if (s.kind === 'error') {
+      <div class="card-body">
+        <div class="alert alert-error" role="alert">
+          <span>{{ s.message }}</span>
+          <button type="button" class="btn btn-ghost btn-sm retry" (click)="reload()">Retry</button>
+        </div>
+      </div>
+    } @else if (s.result.data.length) {
+      <app-request-table [requests]="s.result.data" />
+      @if (s.result.totalPages > 1) {
+        <app-pagination
+          [page]="s.result.page"
+          [totalPages]="s.result.totalPages"
+          [total]="s.result.total"
+          [limit]="s.result.limit"
+          (pageChange)="page.set($event)"
+        />
+      }
+    } @else if (hasFilters()) {
+      <div class="empty-state">
+        <h3>No matching requests</h3>
+        <p>Try a different status or search term.</p>
+        <button type="button" class="btn btn-ghost" (click)="clearFilters()">Clear filters</button>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <h3>You have not submitted any requests yet</h3>
+        <p>Something broken, missing or not working on campus? Let the service team know.</p>
+        <a routerLink="/requests/new" class="btn btn-primary">Submit your first request</a>
+      </div>
+    }
+  </div>
+</section>

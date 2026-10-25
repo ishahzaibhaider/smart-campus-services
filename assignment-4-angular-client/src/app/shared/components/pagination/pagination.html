@@ -1,0 +1,23 @@
+<nav class="pager" aria-label="Pagination">
+  <span class="summary">Showing <strong>{{ from() }}–{{ to() }}</strong> of <strong>{{ total() }}</strong></span>
+  <div class="buttons">
+    <button type="button" class="btn btn-ghost btn-sm" [disabled]="page() <= 1" (click)="go(page() - 1)">‹ Prev</button>
+    @for (p of pages(); track $index) {
+      @if (p === null) {
+        <span class="gap">…</span>
+      } @else {
+        <button
+          type="button"
+          class="btn btn-sm"
+          [class.btn-primary]="p === page()"
+          [class.btn-ghost]="p !== page()"
+          [attr.aria-current]="p === page() ? 'page' : null"
+          (click)="go(p)"
+        >
+          {{ p }}
+        </button>
+      }
+    }
+    <button type="button" class="btn btn-ghost btn-sm" [disabled]="page() >= totalPages()" (click)="go(page() + 1)">Next ›</button>
+  </div>
+</nav>

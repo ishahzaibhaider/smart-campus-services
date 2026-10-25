@@ -1,0 +1,95 @@
+<section class="container narrow">
+  <a routerLink="/dashboard" class="back-link">‹ Back to my requests</a>
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">New service request</span>
+      <h1>What do you need help with?</h1>
+      <p>Give the service team enough detail to act on it without coming back to you.</p>
+    </div>
+  </div>
+
+  <form class="card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="card-body form-grid">
+      @if (errorMessage(); as message) {
+        <div class="alert alert-error" role="alert">{{ message }}</div>
+      }
+
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" class="form-control" formControlName="title" [maxlength]="titleMax"
+               placeholder="e.g. Projector not working in Room C-204" [class.invalid]="showError('title')" />
+        <div class="field-footer">
+          @if (showError('title')) {
+            <span class="field-error">
+              @if (c.title.hasError('required')) { A short title is required. }
+              @else if (c.title.hasError('minlength')) { Title must be at least 3 characters. }
+              @else { Title must be at most {{ titleMax }} characters. }
+            </span>
+          } @else {
+            <span class="field-hint">Summarise the problem in one line.</span>
+          }
+          <span class="field-hint">{{ c.title.value.length }}/{{ titleMax }}</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="category">Category</label>
+        @if (categoriesError(); as catError) {
+          <div class="alert alert-error">Could not load categories: {{ catError }}</div>
+        }
+        <select id="category" class="form-control" formControlName="category" [class.invalid]="showError('category')">
+          <option value="" disabled>Select a service category…</option>
+          @for (category of categories$ | async; track category._id) {
+            <option [value]="category._id">{{ category.name }} ({{ category.code }})</option>
+          }
+        </select>
+        @if (showError('category')) {
+          <span class="field-error">Please choose a category.</span>
+        }
+      </div>
+
+      <fieldset class="field priority-field">
+        <legend class="label">Priority</legend>
+        <div class="priority-options">
+          @for (p of priorities; track p) {
+            <label class="priority-option" [class.selected]="c.priority.value === p">
+              <input type="radio" formControlName="priority" [value]="p" />
+              <span [appStatusColor]="p" kind="priority">{{ p }}</span>
+              <small>{{ priorityHints[p] }}</small>
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" class="form-control" formControlName="description" rows="6" [maxlength]="descriptionMax"
+                  placeholder="Where is it, what happened, since when, and anything you have already tried."
+                  [class.invalid]="showError('description')"></textarea>
+        <div class="field-footer">
+          @if (showError('description')) {
+            <span class="field-error">
+              @if (c.description.hasError('required')) { Please describe the issue. }
+              @else if (c.description.hasError('minlength')) { Add a little more detail (at least 10 characters). }
+              @else { Description must be at most {{ descriptionMax }} characters. }
+            </span>
+          } @else {
+            <span class="field-hint">Location, time and room numbers help a lot.</span>
+          }
+          <span class="field-hint">{{ c.description.value.length }}/{{ descriptionMax }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer form-actions">
+      <a routerLink="/dashboard" class="btn btn-ghost">Cancel</a>
+      <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+        @if (submitting()) {
+          <span class="spinner"></span> Submitting…
+        } @else {
+          Submit request
+        }
+      </button>
+    </div>
+  </form>
+</section>
